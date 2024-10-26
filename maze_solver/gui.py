@@ -1,3 +1,6 @@
+from __future__ import (
+    annotations,
+)  # postpones the evaluation of all annotations until they're needed
 from tkinter import Tk, BOTH, Canvas
 
 
@@ -68,3 +71,17 @@ class Cell:
             self._win.canvas.create_line(self._x2, self._y1, self._x2, self._y2)
         if self.has_bottom_wall:
             self._win.canvas.create_line(self._x1, self._y2, self._x2, self._y2)
+
+    def draw_move(self, to_cell: Cell, undo=False):
+        line_color = "gray"
+        if not undo:
+            line_color = "red"
+
+        self_middle_x = (self._x1 + self._x2) / 2
+        self_middle_y = (self._y1 + self._y2) / 2
+        to_middle_x = (to_cell._x1 + to_cell._x2) / 2
+        to_middle_y = (to_cell._y1 + to_cell._y2) / 2
+
+        self._win.canvas.create_line(
+            self_middle_x, self_middle_y, to_middle_x, to_middle_y, fill=line_color
+        )

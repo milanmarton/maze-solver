@@ -39,6 +39,9 @@ def main():
         {"left": True, "right": True, "top": True, "bottom": False},
     ]
 
+    # Store cells in a list to reference them later for drawing moves
+    cells = []
+
     # Create and draw cells with different configurations
     for i, test_case in enumerate(test_cases):
         # Calculate position for each cell (4 cells per row)
@@ -61,6 +64,19 @@ def main():
 
         # Draw cell
         cell.draw()
+
+        # Store cell in our list
+        cells.append(cell)
+
+    # Test draw_move function with different scenarios
+    # Draw some moves in red
+    cells[0].draw_move(cells[1])  # Move right
+    cells[1].draw_move(cells[5])  # Move down
+    cells[5].draw_move(cells[4])  # Move left
+
+    # Draw some undo moves in gray
+    cells[4].draw_move(cells[5], undo=True)  # Undo move right
+    cells[5].draw_move(cells[1], undo=True)  # Undo move up
 
     win.wait_for_close()
 
