@@ -14,7 +14,7 @@ class Line:
         self.P1 = P1
         self.P2 = P2
 
-    def draw(self, canvas: Canvas, fill_color: str):
+    def draw(self, canvas: Canvas, fill_color: str) -> None:
         canvas.create_line(
             self.P1.x, self.P1.y, self.P2.x, self.P2.y, fill=fill_color, width=2
         )
@@ -43,3 +43,28 @@ class Window:
 
     def draw_line(self, line: Line, fill_color: str):
         line.draw(self.canvas, fill_color)
+
+
+class Cell:
+    def __init__(self, P1: Point, P2: Point, win: Window) -> None:
+        # P(x1,y1) is supposedly the top-left corner
+        # P(x2,y2) is supposedly the bottom-right corner
+        self.has_left_wall = True
+        self.has_right_wall = True
+        self.has_top_wall = True
+        self.has_bottom_wall = True
+        self._x1 = P1.x
+        self._x2 = P2.x
+        self._y1 = P1.y
+        self._y2 = P2.y
+        self._win = win
+
+    def draw(self) -> None:
+        if self.has_left_wall:
+            self._win.canvas.create_line(self._x1, self._y1, self._x1, self._y2)
+        if self.has_top_wall:
+            self._win.canvas.create_line(self._x1, self._y1, self._x2, self._y1)
+        if self.has_right_wall:
+            self._win.canvas.create_line(self._x2, self._y1, self._x2, self._y2)
+        if self.has_bottom_wall:
+            self._win.canvas.create_line(self._x1, self._y2, self._x2, self._y2)
