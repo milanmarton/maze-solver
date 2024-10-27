@@ -62,6 +62,7 @@ class Cell:
         self._y1 = P1.y
         self._y2 = P2.y
         self._win = win
+        self.visited = False
 
     def draw(self) -> None:
         if not self._win:
