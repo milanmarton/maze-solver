@@ -1,0 +1,2 @@
+# Core requirements for maze solver project
+tk>=8.6  # for GUI components
