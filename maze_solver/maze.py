@@ -1,5 +1,6 @@
 from gui import Cell, Point, Window
 import time
+from typing import Optional
 
 
 class Maze:
@@ -11,7 +12,7 @@ class Maze:
         num_cols: int,
         cell_size_x: int,
         cell_size_y: int,
-        win: Window,
+        win: Optional[Window] = None,
     ) -> None:
         self.x1 = x1
         self.y1 = y1
@@ -48,5 +49,7 @@ class Maze:
         self._animate()
 
     def _animate(self):
+        if not self.win:
+            return
         self.win.redraw()
         time.sleep(0.05)

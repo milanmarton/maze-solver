@@ -2,6 +2,7 @@ from __future__ import (
     annotations,
 )  # postpones the evaluation of all annotations until they're needed
 from tkinter import Tk, BOTH, Canvas
+from typing import Optional
 
 
 class Point:
@@ -49,7 +50,7 @@ class Window:
 
 
 class Cell:
-    def __init__(self, P1: Point, P2: Point, win: Window) -> None:
+    def __init__(self, P1: Point, P2: Point, win: Optional[Window] = None) -> None:
         # P(x1,y1) is supposedly the top-left corner
         # P(x2,y2) is supposedly the bottom-right corner
         self.has_left_wall = True
@@ -63,6 +64,8 @@ class Cell:
         self._win = win
 
     def draw(self) -> None:
+        if not self._win:
+            return
         if self.has_left_wall:
             self._win.canvas.create_line(self._x1, self._y1, self._x1, self._y2)
         if self.has_top_wall:
@@ -73,9 +76,9 @@ class Cell:
             self._win.canvas.create_line(self._x1, self._y2, self._x2, self._y2)
 
     def draw_move(self, to_cell: Cell, undo=False):
-        line_color = "gray"
-        if not undo:
-            line_color = "red"
+        if not self._win:
+            return
+        line_color = "gray" if undo else "red"
 
         self_middle_x = (self._x1 + self._x2) / 2
         self_middle_y = (self._y1 + self._y2) / 2
