@@ -40,9 +40,9 @@ class Maze:
             for row_num in range(self.num_rows)
         ]
 
-        for i in range(self.num_rows):
-            for j in range(self.num_cols):
-                self._draw_cell(i, j)
+        for row in range(self.num_rows):
+            for col in range(self.num_cols):
+                self._draw_cell(row, col)
 
     def _draw_cell(self, row_num: int, col_num: int):
         self._cells[row_num][col_num].draw()
@@ -53,3 +53,12 @@ class Maze:
             return
         self.win.redraw()
         time.sleep(0.05)
+
+    def _break_entrance_and_exit(self):
+        start_cell = self._cells[0][0]
+        end_cell = self._cells[self.num_rows - 1][self.num_cols - 1]
+
+        start_cell.has_top_wall = False
+        start_cell.draw()
+        end_cell.has_bottom_wall = False
+        end_cell.draw()
