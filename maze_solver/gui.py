@@ -44,6 +44,7 @@ class Window:
 
     def close(self) -> None:
         self.running = False
+        self.root.destroy()
 
     def draw_line(self, line: Line, fill_color: str):
         line.draw(self.canvas, fill_color)
@@ -69,38 +70,38 @@ class Cell:
             return
         if self.has_left_wall:
             self._win.canvas.create_line(
-                self._x1, self._y1, self._x1, self._y2, fill="black"
+                self._x1, self._y1, self._x1, self._y2, fill="black", width=2
             )
         else:
             self._win.canvas.create_line(
-                self._x1, self._y1, self._x1, self._y2, fill="white"
+                self._x1, self._y1, self._x1, self._y2, fill="white", width=2
             )
 
         if self.has_top_wall:
             self._win.canvas.create_line(
-                self._x1, self._y1, self._x2, self._y1, fill="black"
+                self._x1, self._y1, self._x2, self._y1, fill="black", width=2
             )
         else:
             self._win.canvas.create_line(
-                self._x1, self._y1, self._x2, self._y1, fill="white"
+                self._x1, self._y1, self._x2, self._y1, fill="white", width=2
             )
 
         if self.has_right_wall:
             self._win.canvas.create_line(
-                self._x2, self._y1, self._x2, self._y2, fill="black"
+                self._x2, self._y1, self._x2, self._y2, fill="black", width=2
             )
         else:
             self._win.canvas.create_line(
-                self._x2, self._y1, self._x2, self._y2, fill="white"
+                self._x2, self._y1, self._x2, self._y2, fill="white", width=2
             )
 
         if self.has_bottom_wall:
             self._win.canvas.create_line(
-                self._x1, self._y2, self._x2, self._y2, fill="black"
+                self._x1, self._y2, self._x2, self._y2, fill="black", width=2
             )
         else:
             self._win.canvas.create_line(
-                self._x1, self._y2, self._x2, self._y2, fill="white"
+                self._x1, self._y2, self._x2, self._y2, fill="white", width=2
             )
 
     def draw_move(self, to_cell: Cell, undo=False):
@@ -114,5 +115,10 @@ class Cell:
         to_middle_y = (to_cell._y1 + to_cell._y2) / 2
 
         self._win.canvas.create_line(
-            self_middle_x, self_middle_y, to_middle_x, to_middle_y, fill=line_color
+            self_middle_x,
+            self_middle_y,
+            to_middle_x,
+            to_middle_y,
+            fill=line_color,
+            width=2,
         )

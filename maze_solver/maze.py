@@ -3,6 +3,9 @@ import time
 import random
 from typing import Optional
 
+ANIMATION_SPEED = 0.15  # solving speed
+CREATION_ANIMATION_SPEED = 0.001  # maze generation
+
 
 class Maze:
     def __init__(
@@ -37,7 +40,7 @@ class Maze:
         p2 = Point(x2, y2)
         return Cell(p1, p2, self.win)
 
-    def _create_cells(self):
+    def _create_cells(self) -> None:
         self._cells = [
             [self._create_cell(row_num, col_num) for col_num in range(self.num_cols)]
             for row_num in range(self.num_rows)
@@ -45,19 +48,21 @@ class Maze:
 
         for row in range(self.num_rows):
             for col in range(self.num_cols):
-                self._draw_cell(row, col)
+                self._draw_cell(row, col, CREATION_ANIMATION_SPEED)
 
-    def _draw_cell(self, row_num: int, col_num: int):
+    def _draw_cell(
+        self, row_num: int, col_num: int, animation_speed: float = ANIMATION_SPEED
+    ) -> None:
         self._cells[row_num][col_num].draw()
-        self._animate()
+        self._animate(animation_speed)
 
-    def _animate(self):
+    def _animate(self, animation_speed: float = ANIMATION_SPEED) -> None:
         if not self.win:
             return
         self.win.redraw()
-        time.sleep(0.05)
+        time.sleep(animation_speed)
 
-    def _break_entrance_and_exit(self):
+    def _break_entrance_and_exit(self) -> None:
         start_cell = self._cells[0][0]
         end_cell = self._cells[self.num_rows - 1][self.num_cols - 1]
 
@@ -66,7 +71,7 @@ class Maze:
         end_cell.has_bottom_wall = False
         end_cell.draw()
 
-    def _break_walls_r(self, row: int, col: int):
+    def _break_walls_r(self, row: int, col: int) -> None:
         # breaking walls using DFS
 
         # mark current cell as visited
@@ -86,7 +91,7 @@ class Maze:
 
             # dead end
             if len(possible_directions) == 0:
-                self._draw_cell(row, col)
+                self._draw_cell(row, col, CREATION_ANIMATION_SPEED)
                 return
 
             next_row, next_col, dir = random.choice(possible_directions)
@@ -108,7 +113,7 @@ class Maze:
                 next_cell.has_left_wall = False
 
             # draw the current cell
-            self._draw_cell(row, col)
+            self._draw_cell(row, col, CREATION_ANIMATION_SPEED)
 
             # recursively call the next cell
             self._break_walls_r(next_row, next_col)
@@ -117,3 +122,50 @@ class Maze:
         for row in range(self.num_rows):
             for col in range(self.num_cols):
                 self._cells[row][col].visited = False
+
+    def solve(self) -> bool:
+        self._reset_cells_visited()
+        return self._solve_r(0, 0)
+
+    def _solve_r(self, row: int, col: int) -> bool:
+        if not self.win:
+            return False
+
+        self._animate()
+
+        current_cell = self._cells[row][col]
+        current_cell.visited = True
+
+        # end cell check
+        if row == self.num_rows - 1 and col == self.num_cols - 1:
+            return True
+
+        directions = [
+            (-1, 0, "has_top_wall"),  # up
+            (0, 1, "has_right_wall"),  # right
+            (1, 0, "has_bottom_wall"),  # down
+            (0, -1, "has_left_wall"),  # left
+        ]
+
+        for delta_row, delta_col, wall_attr in directions:
+            new_row = row + delta_row
+            new_col = col + delta_col
+
+            # check if new cell is within bounds
+            if 0 <= new_row < self.num_rows and 0 <= new_col < self.num_cols:
+                next_cell = self._cells[new_row][new_col]
+
+                # check that there is no wall and the next cell is not visited
+                if not getattr(current_cell, wall_attr) and not next_cell.visited:
+                    current_cell.draw_move(next_cell)
+                    # self._animate()
+
+                    # recursively try this path
+                    if self._solve_r(new_row, new_col):
+                        return True
+
+                    # if path didn't work, undo the move
+                    current_cell.draw_move(next_cell, undo=True)
+                    # self._animate()
+
+        return False
