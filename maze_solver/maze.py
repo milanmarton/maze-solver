@@ -1,4 +1,4 @@
-from gui import Cell, Point, Window
+from maze_solver.gui import Cell, Point, Window
 import time
 from typing import Optional
 
@@ -25,9 +25,9 @@ class Maze:
         self._cells = []
         self._create_cells()
 
-    def _create_cell(self, i: int, j: int) -> Cell:
-        x1 = self.x1 + j * self.cell_size_x
-        y1 = self.y1 + i * self.cell_size_y
+    def _create_cell(self, row_num: int, col_num: int) -> Cell:
+        x1 = self.x1 + col_num * self.cell_size_x
+        y1 = self.y1 + row_num * self.cell_size_y
         x2 = x1 + self.cell_size_x
         y2 = y1 + self.cell_size_y
         p1 = Point(x1, y1)
@@ -36,16 +36,16 @@ class Maze:
 
     def _create_cells(self):
         self._cells = [
-            [self._create_cell(i, j) for j in range(self.num_cols)]
-            for i in range(self.num_rows)
+            [self._create_cell(row_num, col_num) for col_num in range(self.num_cols)]
+            for row_num in range(self.num_rows)
         ]
 
         for i in range(self.num_rows):
             for j in range(self.num_cols):
                 self._draw_cell(i, j)
 
-    def _draw_cell(self, i: int, j: int):
-        self._cells[i][j].draw()
+    def _draw_cell(self, row_num: int, col_num: int):
+        self._cells[row_num][col_num].draw()
         self._animate()
 
     def _animate(self):
